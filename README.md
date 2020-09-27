@@ -1,21 +1,26 @@
 
 
 
-### proj: translate X currency to selected currency types,
-# for example: USD to:
-    # 1. UK sterling
-    # 2. Euro
-    # 3. NIS
+## Instructions
+```
+1. git clone; 
+2. cd into the cloned repository
+3. python3 -m venv
+4. source venv/bin/activate
+5. pip install -r requirements.txt
+```
 
 
-1. get updated exchange rates
-    # bank of israel API: 
-        #https://www.boi.org.il/he/Markets/Pages/explainxml.aspx
-    3 !async! requests - 
-        https://www.boi.org.il/currency.xml?curr=01
-        https://www.boi.org.il/currency.xml?curr=02
-        https://www.boi.org.il/currency.xml?curr=27
-2. ask user for input -> num
-3. ask user for currency types
-4. show results 
+### Usage as web service -
+1. Start flask app by:  
+`python flask_app.py`
+
+2. Query the server -  
+`http://127.0.0.1:5000/?amount=20&currency=USD`  
+or get the exchange rate to NIS with no arguments -  
+`http://127.0.0.1:5000/`
+
+
+### command line usage:
+    python exchange_translator.py 20 USD
 
