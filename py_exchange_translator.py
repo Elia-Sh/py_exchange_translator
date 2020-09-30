@@ -5,6 +5,7 @@ import defusedxml.ElementTree as defused_ElementTree
 
 from utils import Utils
 
+
 class CurrencyTranslator(object):
     '''
     A simple utility to convert multiple currencies between them,
@@ -13,6 +14,12 @@ class CurrencyTranslator(object):
     '''
 
     NIS_STR = 'NIS'
+
+    boi_urls = [
+        'https://www.boi.org.il/currency.xml?curr=01',
+        'https://www.boi.org.il/currency.xml?curr=02',
+        'https://www.boi.org.il/currency.xml?curr=27',
+    ]
 
     def __init__(self, currencies_dict=None):
         self.currencies_dict = dict()
@@ -54,6 +61,19 @@ class CurrencyObj(object):
         self.currency_name = currency_name
         self.url_of_exchange_xml = url_of_exchange_xml
         self.exchange_rate_to_NIS = float(exchange_rate_to_NIS)
+
+    def __eq__(self, other):
+        if not other:
+            return False
+
+        return self.currency_name == other.currency_name \
+            and self.exchange_rate_to_NIS == other.exchange_rate_to_NIS \
+            and self.url_of_exchange_xml == other.url_of_exchange_xml
+
+    def __str__(self):
+        return '{}<<{}, {}, {}>>'.format('CurrencyObj',
+                                         self.currency_name, self.exchange_rate_to_NIS,
+                                         self.url_of_exchange_xml)
 
     @staticmethod
     def extract_data_from_boi_xml(xml_root_element=None):
@@ -104,14 +124,8 @@ def parse_arguments():
 
 def main(num=None, currency_name='None'):
 
-    boi_urls = [
-        'https://www.boi.org.il/currency.xml?curr=01',
-        'https://www.boi.org.il/currency.xml?curr=02',
-        'https://www.boi.org.il/currency.xml?curr=27',
-    ]
-
-    # TODO utilize redis db as a caching mechanism - reduces amount 
-    futures_dict = Utils.async_crawl(boi_urls)
+    # TODO utilize redis db as a caching mechanism - reduces amount
+    futures_dict = Utils.async_crawl(CurrencyTranslator.boi_urls)
     list_of_currencies = []
     result = ''
 
@@ -135,7 +149,7 @@ def main(num=None, currency_name='None'):
         print('Exchanging {} {} ---> '.format(num, currency_name))
         result = currency_manager.calculate_all(num, currency_name)
         print(result)
-    
+
     return result
 
 
